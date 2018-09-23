@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/ui.jqgrid.css" />
+    <script src="./js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="./js/jquery-ui.js" type="text/javascript"></script>
+    <script src="./js/i18n/grid.locale-kr.js" type="text/javascript"></script>
+    <script src="./js/jquery.jqGrid.min.js" type="text/javascript"></script>
+    <script>
+        $(function(){
+            var grid=$("#list");
+            var mData = [];
+            mData = JSON.parse('<%- JSON.stringify(body) %>');
+            
+            grid.jqGrid({
+                datatype: "local",
+                height: 'auto',
+                colNames:['No','제목','내용'],
+                colModel:[
+                    {name:'java_id', index:'java_id', width:60, sorttype:"int"},
+                    {name:'java_content', index:'java_content', width:200},
+                    {name:'java_body', index:'java_body', width:200, sortable:false},
+                ],
+                multiselect:true,
+                caption: "게시글 목록",
+                rownumbers:true,
+                pager: "#pager",
+                rowNum:2,
+                onCellSelect:function(id){
+                    console.log('id : ' + id);
+                },
+                ondblClickRow : function(rowid){    //더블 클릭 시 이벤트 처리
+                  var java_body = $("#list").getCell(rowid,'java_content');
+                  console.log(java_body);
+                }
+            });
+
+            for(var i=0; i<mData.length ; i++ ){
+                grid.jqGrid('addRowData', i+1, mData[i]);
+            }
+            jQuery("#grid").jqGrid(
+                'navGrid','#pager',{edit:false,add:false,del:false,search:true},{},{},{},{});
+        });
+    </script>
+    </head>
+<body>
+    
+    
+<table id="list"></table>
+<div id="pager"></div>
+
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<script>
+  function move(val){
+    var move = document.getElementById('movepage');
+    move.action = val;
+    move.submit();
+    console.log(val);
+  }
+</script>
+
+<form id="movepage" action="" method="POST">
+<% 
+var isVisibleMain = false;
+var mainName = null;
+for (var i=0; i<rows.length; i++){ 
+  if (mainName==null){
+    mainName = rows[i].menu_name;
+    isVisibleMain = true;
+  }else if (mainName == rows[i].menu_name){
+    isVisibleMain = false;
+  }else{
+    isVisibleMain = true;
+  }
+
+  if (isVisibleMain){
+%>
+  <li><label onclick='move("<%=rows[i].menu_action %>")'><%=rows[i].menu_name %></label></li>
+  <li><label onclick='move("<%=rows[i].menu_sub_action %>")'><%=rows[i].menu_sub_name %></label></li>
+<%
+  }else{
+%>
+  <li><label onclick='move("<%=rows[i].menu_sub_action %>")'><%=rows[i].menu_sub_name %></label></li>
+<%
+  }
+%>
+<% 
+} 
+%>
+</form>

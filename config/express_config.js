@@ -29,8 +29,10 @@ module.exports = function(){
 */
     app.set('views','./app/views');
     app.set('view engine','ejs');
+    app.use(express.static("./static"));
 
     require('../app/routers/index.routes')(app);
     require('../app/routers/admin.routes')(app);
+    require('../app/routers/menu.routes')(app);
     return app;
 };
