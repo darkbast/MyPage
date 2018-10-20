@@ -1,0 +1,157 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/ui.jqgrid.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/common.css" />
+
+    <script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <!-- <script src="js/jquery-ui-1.11.1.min.js" type="text/javascript"></script> -->
+    <script src="js/i18n/grid.locale-kr.js" type="text/javascript"></script>
+    <script src="js/jquery.jqGrid.min.js" type="text/javascript"></script>
+    <!-- <script src="js/qalist.js" type="text/javascript"></script> -->
+
+</head>
+
+<body>
+    <div class="common">
+        <select id="div1">
+            <%
+        for (var i=0; i<ret1.length; i++){ 
+        %>
+            <option value='<%=ret1[i].div1 %>'>
+                <%=ret1[i].div1 %>
+            </option>
+            <%
+        }
+        %>
+        </select>
+
+        <select id="div2">
+            <option value="" selected>ALL</option>
+            <%
+        for (var i=0; i<ret1.length; i++){ 
+        %>
+            <option value='<%=ret1[i].div2 %>'>
+                <%=ret1[i].div2 %>
+            </option>
+            <%
+        }
+        %>
+        </select>
+        <input id="div2_text" type="text" />
+        <input id="searchBtn" type="button" value="검색" />
+    </div>
+
+    <!-- <div class="common">
+        <label>TITLE</label> <input id="qa_title" type="text" class="type200"/><br>
+        <textarea id="qa_body">
+        </textarea>
+    </div> -->
+    <div class="common">
+        <table id="qalist"></table>
+        <div id='#pager1'></div>
+    </div>
+    <script type="text/javascript">
+        var initRet = JSON.parse('<%- JSON.stringify(ret2) %>');
+
+        $('#searchBtn').click(() => {
+            console.log('SeachBtn Click');
+            var url = "";
+            var datas = {
+                title : $('div2_text').val(),
+                div1 : $('div1').val(),
+                div2 : $('div2').val(),
+            };
+            // $("#qalist").jqGrid({
+            //     url:'/qa/search',
+            //     colNames: ["title"],
+            //     colModel: [
+            //         { name: "title", index: "qa_title", width: 150, align: 'center' },
+            //     ],
+            //     mtype : 'POST',
+            //     rownumbers: true,
+            //     multiselect: true,
+            //     rowNum: 10,
+            //     height: 200,
+            //     width: 500,
+            //     gridview: true,
+            //     rowList: [5, 10, 50, 100, 500],
+            //     viewrecords: true,
+            //     datatype: 'json',
+            //     pager: '#pager1',
+            //     loadError : function (xhr, status, error){
+            //         console.log("error");
+            //     },
+            //     loadComplete:function(data){
+            //         console.log("loadcomplete");
+            //         console.log(data);
+            //     }
+            // });
+            $.ajax({
+                url: "/qa/search",
+                data: datas,
+                dataType: 'json',
+                method: "POST",
+                success: function (result) {
+                    console.log(result);
+                    console.log(result.ret);
+                    console.log(result.ret[0].title);
+                    $("#qalist").jqGrid({
+                        colNames: ["title"],
+                        colModel: [
+                            { name: "title", index: "title", width: 150, align: 'center' },
+                        ],
+                        rownumbers: true,
+                        multiselect: true,
+                        data: result.ret,
+                        rowNum: 10,
+                        height: 200,
+                        width: 500,
+                        gridview: true,
+                        rowList: [5, 10, 50, 100, 500],
+                        viewrecords: true,
+                        datatype: 'local',
+                        pager: '#pager1',
+                   });
+                },
+                error: function(jqXHR,textStatus,errorThrown){
+                    console.log("error");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        });
+
+        $('#writeBtn').click(() => {
+            console.log('writeBtn Click');
+        });
+
+        function executeGrid(initRet) {
+
+            $("#qalist").jqGrid({
+                colNames: ["title"],
+                colModel: [
+                    { name: "title", index: "title", width: 150, align: 'center' },
+                ],
+                rownumbers: true,
+                multiselect: true,
+                data: initRet,
+                rowNum: 10,
+                height: 200,
+                width: 500,
+                gridview: true,
+                rowList: [5, 10, 50, 100, 500],
+                viewrecords: true,
+                datatype: 'local',
+                pager: '#pager1',
+            });
+        }
+        $(function () {
+            executeGrid(initRet);
+        });
+    </script>
+</body>
+
+</html>
